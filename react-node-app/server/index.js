@@ -7,7 +7,7 @@ const fs = require("fs");
 // create our express app
 const app = express();
 const usersFilePath = path.join(__dirname, "/database/account.json");
-const modelFilePath = path.join(__dirname, "/database/model.json");
+
 
 app.use(cors());
 

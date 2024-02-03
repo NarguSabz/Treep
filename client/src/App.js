@@ -5,14 +5,26 @@ import axios from "axios";
 import "./App.css"; // Import the custom CSS file
 import { useAppContext } from "./AppContext";
 import PrivateRoute from './PrivateRoute';
+import LoginForm from './signin';
 
 
 
 function App() {
-return (
-    <div className="app-container">
-    </div>
-);
+  return (
+    <Router>
+      <div className="app-container">
+        <Routes>
+          <Route exact path='/' element={<PrivateRoute />}>
+            <Route exact path='/' element={<Home />} />
+          </Route>
+          <Route exact path='/login' element={<LoginForm />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+function Home() {
+  return <div className="main-content">Welcome to the Single Page App!</div>;
 }
 
 export default App;
