@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAppContext } from './AppContext';
 import "./App.css"; // Import the custom CSS file
+import User from "./user";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const { setIsAuthenticated,setUserUsername} = useAppContext();
+  const { setIsAuthenticated,setUser} = useAppContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,8 +23,11 @@ function LoginForm() {
       if (response.data && response.data.isAuthenticated) {
         // Create a new instance of Player with the data from the response
         setIsAuthenticated(true);
-        setUserUsername(username)
-        navigate('/');
+        const newUser = new User();
+        Object.assign(newUser, response.data.user);
+        
+        setUser(newUser);      
+         navigate('/');
       } else {
         // Handle unsuccessful authentication, show error message, etc.
         console.log('Authentication failed');

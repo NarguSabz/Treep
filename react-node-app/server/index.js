@@ -28,7 +28,7 @@ app.post('/login', async (req, res) => {
     // Check if the password matches
     if (user && user.password === password) {
       // Authentication successful
-      res.json({ isAuthenticated: true, player: user.player });
+      res.json({ isAuthenticated: true, user: user });
     } else {
       // Authentication failed
       res.json({ isAuthenticated: false, error: 'Invalid username or password' });
@@ -85,7 +85,7 @@ const saveuserData = (userData) => {
       // Find and update the player data based on your data structure
       const updatedUsers = users.map((user) => {
         if (user.username === userData.username) {
-          user.player = userData.player;  
+         user.points = userData.points;  
         }
           return user;
 

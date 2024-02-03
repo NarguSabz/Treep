@@ -12,18 +12,15 @@ import LoginForm from './signin';
 function App() {
   const {
     isAuthenticated,
-    userUsername,
-    setIsAuthenticated
+    user,
+    setIsAuthenticated,
   } = useAppContext();
-
   // Create a new Signout component
 const handleSignOut = async () => {
   try {
     // Call the backend sign-out route and send player data
     const response = await axios.post('http://localhost:3001/signout', {
-      userData: {
-        username: userUsername, // Replace with the actual username
-      },
+      userData: user
     });
 
     // Update the authentication state in your context
@@ -50,7 +47,17 @@ const handleSignOut = async () => {
   );
 }
 function Home() {
-  return <div className="main-content">Welcome to the Single Page App!</div>;
+  const {
+    updateUserPoints,
+    user
+  } = useAppContext();
+ const addingPoints = ()=> {
+  updateUserPoints(user.points+1);
+ };
+  return <div className="main-content">
+    <h3>point: {user.points}</h3>
+    <button onClick={addingPoints}>add points</button>
+  </div>;
 }
 
 export default App;
