@@ -6,6 +6,7 @@ import "./App.css"; // Import the custom CSS file
 import { useAppContext } from "./AppContext";
 import PrivateRoute from './PrivateRoute';
 import LoginForm from './signin';
+import RewardPlayer from './rewardPlayer'
 
 
 
@@ -37,7 +38,7 @@ const handleSignOut = async () => {
       <div className="app-container">
         <Routes>
           <Route exact path='/' element={<PrivateRoute />}>
-            <Route exact path='/' element={<Home />} />
+            <Route exact path='/' element={<RewardPlayer />} />
           </Route>
           <Route exact path='/login' element={<LoginForm />} />
         </Routes>
@@ -46,18 +47,6 @@ const handleSignOut = async () => {
     </Router>
   );
 }
-function Home() {
-  const {
-    updateUserPoints,
-    user
-  } = useAppContext();
- const addingPoints = ()=> {
-  updateUserPoints(user.points+1);
- };
-  return <div className="main-content">
-    <h3>point: {user.points}</h3>
-    <button onClick={addingPoints}>add points</button>
-  </div>;
-}
+
 
 export default App;

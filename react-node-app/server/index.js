@@ -2,6 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const Jimp = require("jimp");
+const qrCodeReader = require('qrcode-reader');
+const buffer = fs.readFileSync('/output-file-path/file.png');
+
 
 const fs = require("fs");
 // create our express app
@@ -15,6 +19,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Endpoint for handling login requests
+
+
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -69,6 +75,11 @@ app.post('/signout', (req, res) => {
   }
 });
 
+// server/index.js
+app.post('/readingQrCode', (req, res) => {
+  res.json({ success: true });
+});
+
 // Function to save player data to JSON file
 const saveuserData = (userData) => {
 
@@ -102,6 +113,31 @@ const saveuserData = (userData) => {
     }
   });
 };
+
+const readQrcode = (base64Image)=>{
+  const buffer = Buffer.from(base64Image, 'base64');
+ 
+// __ Parse the image using Jimp.read() __ \\
+Jimp.read(buffer, function(err, image) {
+    if (err) {
+        console.error(err);
+    }
+// __ Creating an instance of qrcode-reader __ \\
+
+    const qrCodeInstance = new qrCodeReader();
+
+    qrCodeInstance.callback = function(err, value) {
+        if (err) {
+            console.error(err);
+        }
+// __ Printing the decrypted value __ \\
+        console.log(value.result);
+    };
+
+// __ Decoding the QR code __ \\
+    qrCodeInstance.decode(image.bitmap);
+});
+}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
