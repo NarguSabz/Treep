@@ -1,0 +1,54 @@
+[
+  {
+    "username": "user1",
+    "password": "123",
+    "last_access": "2024-01-20T12:30:00Z",
+    "player": {
+      "health": 100,
+      "level": 4,
+      "skills": [
+        {
+          "skillName": "Fireball",
+          "destruction": 50,
+          "icon": "🔥",
+          "usageNumber": 3
+        },
+        {
+          "skillName": "Heal",
+          "destruction": 20,
+          "icon": "⚕️",
+          "usageNumber": 5
+        }
+      ],
+      "mealCount": 3,
+      "healthyDayCount": 1,
+      "lastMealTime": 1706582456586
+    }
+  },
+  {
+    "username": "user2",
+    "password": "123",
+    "last_access": "2024-01-19T15:45:00Z",
+    "player": {
+      "health": 50,
+      "level": 1,
+      "skills": [
+        {
+          "skillName": "Fireball",
+          "destruction": 50,
+          "icon": "🔥",
+          "usageNumber": 3
+        },
+        {
+          "skillName": "Heal",
+          "destruction": 20,
+          "icon": "⚕️",
+          "usageNumber": 5
+        }
+      ],
+      "mealCount": 0,
+      "healthyDayCount": 0,
+      "lastMealTime": null
+    }
+  }
+]
