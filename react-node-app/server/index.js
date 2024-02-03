@@ -4,10 +4,9 @@ const cors = require("cors");
 const path = require("path");
 const Jimp = require("jimp");
 const qrCodeReader = require('qrcode-reader');
-const buffer = fs.readFileSync('/output-file-path/file.png');
-
-
 const fs = require("fs");
+
+
 // create our express app
 const app = express();
 const usersFilePath = path.join(__dirname, "/database/account.json");
@@ -59,6 +58,9 @@ const loadUsers = async () => {
   }
 };
 
+app.post('/readingQrCode',()=>{
+  readQrcode(req.body.image)
+})
 // server/index.js
 app.post('/signout', (req, res) => {
   try {
