@@ -10,6 +10,31 @@ import LoginForm from './signin';
 
 
 function App() {
+  const {
+    isAuthenticated,
+    userUsername,
+    setIsAuthenticated
+  } = useAppContext();
+
+  // Create a new Signout component
+const handleSignOut = async () => {
+  try {
+    // Call the backend sign-out route and send player data
+    const response = await axios.post('http://localhost:3001/signout', {
+      userData: {
+        username: userUsername, // Replace with the actual username
+      },
+    });
+
+    // Update the authentication state in your context
+    setIsAuthenticated(false);
+
+    // Redirect to the login page or any other page
+    window.location.href = '/login'; // Use window.location for redirection
+  } catch (error) {
+    console.error('Error during sign-out:', error);
+  }
+};
   return (
     <Router>
       <div className="app-container">
@@ -19,6 +44,7 @@ function App() {
           </Route>
           <Route exact path='/login' element={<LoginForm />} />
         </Routes>
+        {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>}
       </div>
     </Router>
   );
