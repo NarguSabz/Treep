@@ -1,10 +1,9 @@
 import Player from "./player"
 
 class User {
-    constructor(username, lastAccess, player) {
+    constructor(username, password,points) {
         this.username = username;
-        this.lastAccess = Date.parse(lastAccess);
-        this.player = new Player(player);
+        this.points = points;
     }
 }
 export default User;
