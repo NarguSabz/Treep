@@ -1,4 +1,3 @@
-import Player from "./player"
 
 class User {
     constructor(username, password,points) {
