@@ -54,13 +54,16 @@ function FeedPlayer() {
   };
 
   const classifyImage = async (base64String) => {
-    try {
+    try {      
+
       const response = await axios.post("http://localhost:3001/readingQrCode", {
         image: base64String,
       });
-      console.log("response", response.data);
+      console.log(response.data.qrState )
       // Update the user's points
+      if(response.data.qrState == "valid"){
       updateUserPoints(user.points+1);
+    }
     } catch (error) {
       console.error("Error reading image:", error);
     }
