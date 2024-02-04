@@ -6,6 +6,13 @@ const Jimp = require("jimp");
 const qrCodeReader = require('qrcode-reader');
 const fs = require("fs");
 const moment = require('moment');
+const { OpenAI } = require('openai');
+const dotenv = require('dotenv')
+// Create an instance of OpenAIAPI
+dotenv.config()
+const openai = new OpenAI({
+  apiKey: process.env.APIKEY // This is also the default, can be omitted
+});
 
 
 
@@ -168,6 +175,19 @@ const readQrcode = (base64Image, callback) => {
     qrCodeInstance.decode(image.bitmap);
   });
 }
+
+const runPrompt = async()=>{
+  const completion = await openai.chat.completions.create({
+    messages: [{"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Generate a trivia question related to sustainability, public transportation facts, or environmental initiatives for an eco-conscious mobile application. The question should have multiple-choice options (A, B, C, D) and a correct answer. Ensure that the question is engaging and informative, suitable for a daily quiz challenge."},],
+    model: "gpt-3.5-turbo",
+    max_tokens: 100,
+    temperature:1,
+  });
+  console.log(completion.choices[0].message.content);
+
+}
+runPrompt()
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
