@@ -17,13 +17,36 @@
   cursor: pointer;
 }
 
-.centered-content {
+.centered-content,
+.centered-content-tree1,
+.centered-content-tree2,
+.centered-content-tree3,
+.centered-content-tree4 {
   text-align: center;
 }
 
-.centered-content img {
+.centered-content img,
+.centered-content-tree4 img {
   /* margin-top: 10vh; */
- min-width: 300px; /* Ensure the image does not exceed its specified width */
+  min-width: 350px; /* Ensure the image does not exceed its specified width */
+  min-height: 350px; /* Ensure the image does not exceed its specified height */
+}
+
+.centered-content-tree3 img {
+  margin-top: 10vh;
+  min-width: 250px; /* Ensure the image does not exceed its specified width */
+  min-height: 250px; /* Ensure the image does not exceed its specified height */
+}
+
+
+.centered-content-tree2 img {
+  margin-top: 20vh;
+  min-width: 200px; /* Ensure the image does not exceed its specified width */
+  min-height: 200px; /* Ensure the image does not exceed its specified height */
+}
+.centered-content-tree1 img{
+  margin-top: 30vh;
+  min-width: 150px; /* Ensure the image does not exceed its specified width */
   min-height: 150px; /* Ensure the image does not exceed its specified height */
 }
 
@@ -54,11 +77,10 @@
 .top-left-content p,
 .top-right-content p {
   margin: 0;
-  font-family: pixelFont, sans-serif; 
-  font-size: 24px; 
-  color: #000; 
+  font-family: pixelFont, sans-serif;
+  font-size: 24px;
+  color: #000;
 }
-
 
 .popup {
   position: fixed;

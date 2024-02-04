@@ -119,9 +119,28 @@ function FeedPlayer() {
           style={{ display: "none" }}
         />
       </button>
-      <div className="centered-content">
-        <img src={tree4} alt="Centered Image" />
-      </div>
+
+      {user.points == 1 && (
+        <div className="centered-content-tree1">
+          <img src={tree1} alt="Centered Image" />
+        </div>
+      )}
+      {user.points == 2 && (
+        <div className="centered-content-tree2">
+          <img src={tree2} alt="Centered Image" />
+        </div>
+      )}
+      {user.points == 3 && (
+        <div className="centered-content-tree3">
+          <img src={tree3} alt="Centered Image" />
+        </div>
+      )}
+      {user.points >= 4 && (
+        <div className="centered-content-tree4">
+          <img src={tree4} alt="Centered Image" />
+        </div>
+      )}
+
       <div className="top-left-content">
         <img src={question} alt="Small Image" />
       </div>
