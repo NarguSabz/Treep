@@ -7,7 +7,8 @@ const qrCodeReader = require('qrcode-reader');
 const fs = require("fs");
 const moment = require('moment');
 const { OpenAI } = require('openai');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { isUndefined } = require("util");
 // Create an instance of OpenAIAPI
 dotenv.config()
 const openai = new OpenAI({
@@ -146,27 +147,33 @@ const readQrcode = (base64Image, callback) => {
       if (err) {
         console.error(err);
       }
-      const qrCodeData = JSON.parse(value.result);
+      if (value && value.result) {
+        const qrCodeData = JSON.parse(value.result);
 
-      // Check if the "issueDate" and "timeLimit" properties exist
-      if (qrCodeData && qrCodeData.issueDate && qrCodeData.timeLimit) {
-        const issueDate = moment(qrCodeData.issueDate);
-        const timeLimit = qrCodeData.timeLimit;
 
-        // Calculate the expiration date based on the time limit
-        const expirationDate = issueDate.clone().add(moment.duration(timeLimit));
+        // Check if the "issueDate" and "timeLimit" properties exist
+        if (qrCodeData && qrCodeData.issueDate && qrCodeData.timeLimit) {
+          const issueDate = moment(qrCodeData.issueDate);
+          const timeLimit = qrCodeData.timeLimit;
 
-        // Get the current date and time
-        const currentDate = moment();
+          // Calculate the expiration date based on the time limit
+          const expirationDate = issueDate.clone().add(moment.duration(timeLimit));
 
-        // Compare the current date and time to the expiration date
-        if (currentDate.isBefore(expirationDate)) {
-          callback('valid'); // Call the callback with a success message
+          // Get the current date and time
+          const currentDate = moment();
+
+          // Compare the current date and time to the expiration date
+          if (currentDate.isBefore(expirationDate)) {
+            callback('valid'); // Call the callback with a success message
+          } else {
+            callback('expired'); // Call the callback with an expired message
+          }
         } else {
-          callback('expired'); // Call the callback with an expired message
+          callback('invalid'); // Call the callback with an invalid message
         }
       } else {
         callback('invalid'); // Call the callback with an invalid message
+
       }
 
     };
@@ -176,18 +183,17 @@ const readQrcode = (base64Image, callback) => {
   });
 }
 
-const runPrompt = async()=>{
+const runPrompt = async () => {
   const completion = await openai.chat.completions.create({
-    messages: [{"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Generate a trivia question related to sustainability, public transportation facts, or environmental initiatives for an eco-conscious mobile application. The question should have multiple-choice options (A, B, C, D) and a correct answer. Ensure that the question is engaging and informative, suitable for a daily quiz challenge."},],
+    messages: [{ "role": "system", "content": "You are a helpful assistant." },
+    { "role": "user", "content": "Generate a trivia question related to sustainability, public transportation facts, or environmental initiatives for an eco-conscious mobile application. The question should have multiple-choice options (A, B, C, D) and a correct answer. Ensure that the question is engaging and informative, suitable for a daily quiz challenge." },],
     model: "gpt-3.5-turbo",
     max_tokens: 100,
-    temperature:1,
+    temperature: 1,
   });
   console.log(completion.choices[0].message.content);
 
 }
-runPrompt()
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
