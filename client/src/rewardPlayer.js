@@ -12,27 +12,11 @@ import coin from "./icons/coin.svg";
 import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
 import errorPopup from "./icons/invalid-qr.svg";
+import bonusPopup from "./icons/bonus.svg";
 import logout_btn from "./icons/logout.svg";
 
 function RewardPlayer({ callback }) {
-  const { isAuthenticated, setIsAuthenticated } = useAppContext();
   // Create a new Signout component
-  const handleSignOut = async () => {
-    try {
-      // Call the backend sign-out route and send player data
-      const response = await axios.post("http://localhost:3001/signout", {
-        userData: user,
-      });
-
-      // Update the authentication state in your context
-      setIsAuthenticated(false);
-
-      // Redirect to the login page or any other page
-      window.location.href = "/login"; // Use window.location for redirection
-    } catch (error) {
-      console.error("Error during sign-out:", error);
-    }
-  };
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -44,6 +28,7 @@ function RewardPlayer({ callback }) {
   const [image, setImage] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [showBonusPopup, setShowBonusPopup] = useState(false);
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -83,6 +68,15 @@ function RewardPlayer({ callback }) {
       }
     }
   };
+  // add new field to user for the number of trips
+  const applyBonus = () => {
+    updateUserPoints(user.points - 10);
+  };
+
+  const openBonusPopup = () => {
+    // Close the popup
+    setShowBonusPopup(true);
+  };
 
   const closePopup = () => {
     // Close the popup
@@ -94,6 +88,10 @@ function RewardPlayer({ callback }) {
     setShowErrorPopup(false);
   };
 
+  const closeBonusPopup = () => {
+    // Close the popup
+    setShowBonusPopup(false);
+  };
   const logout = () => {
     callback();
   };
@@ -103,6 +101,7 @@ function RewardPlayer({ callback }) {
     if (event.target === event.currentTarget) {
       closePopup();
       closeErrorPopup();
+      closeBonusPopup();
     }
   };
 
@@ -134,9 +133,7 @@ function RewardPlayer({ callback }) {
       if (response.data.qrState == "valid") {
         updateUserPoints(user.points + 1);
         setShowPopup(true);
-      }
-
-      else{
+      } else {
         setShowErrorPopup(true);
       }
     } catch (error) {
@@ -156,8 +153,15 @@ function RewardPlayer({ callback }) {
       )}
       {showErrorPopup && (
         <div className="popup" onClick={handleOverlayClick}>
-          <div className="popup-content" onClick={closePopup}>
+          <div className="popup-content" onClick={closeErrorPopup}>
             <img src={errorPopup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      {showBonusPopup && user.points >=10 && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={applyBonus}>
+            <img src={bonusPopup} alt="Popup Background" />
           </div>
         </div>
       )}
@@ -199,7 +203,7 @@ function RewardPlayer({ callback }) {
         <img src={question} alt="Small Image" onClick={generatingQuiz} />
       </div>
       <div className="top-right-content">
-        <img src={coin} alt="Small Image" />
+        <img src={coin} alt="Small Image" onClick={openBonusPopup} />
         <p>{user.points}</p>
       </div>
       {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
