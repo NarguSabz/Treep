@@ -116,7 +116,7 @@ function RewardPlayer({ callback }) {
             console.error("Error during generating quiz:", error);
         }
     }
-  };
+
   const loadImage = (base64String) => {
     if (base64String) {
       const img = new Image();
