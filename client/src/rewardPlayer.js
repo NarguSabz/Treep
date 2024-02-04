@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Resizer from "react-image-file-resizer";
 import { useAppContext } from "./AppContext";
 import axios from "axios";
+import start_btn from "./start_btn.svg";
 
 function FeedPlayer() {
   const { user, updateUserPoints } = useAppContext();
@@ -37,8 +38,8 @@ function FeedPlayer() {
         // Read the file as a data URL
         // const base64String = resizedImage.toString("base64");
         loadImage(base64String); // Pass the base64 string to loadImage
-              // Reset the input value to allow selecting the same file again
-      fileInput.value = '';
+        // Reset the input value to allow selecting the same file again
+        fileInput.value = "";
       } catch (error) {
         console.error("error in reading image", error);
       }
@@ -54,16 +55,15 @@ function FeedPlayer() {
   };
 
   const classifyImage = async (base64String) => {
-    try {      
-
+    try {
       const response = await axios.post("http://localhost:3001/readingQrCode", {
         image: base64String,
       });
-      console.log(response.data.qrState )
+      console.log(response.data.qrState);
       // Update the user's points
-      if(response.data.qrState == "valid"){
-      updateUserPoints(user.points+1);
-    }
+      if (response.data.qrState == "valid") {
+        updateUserPoints(user.points + 1);
+      }
     } catch (error) {
       console.error("Error reading image:", error);
     }
@@ -71,10 +71,11 @@ function FeedPlayer() {
 
   return (
     <div className="main-content">
-    <h3>point: {user.points}</h3>
-      <label htmlFor="fileInput" className="custom-file-upload">
+      <h3>point: {user.points}</h3>
+      {/* <label htmlFor="fileInput" className="custom-file-upload">
         <i>read qrcode</i>
-      </label>
+      </label> */}
+      <Tab to="/player-stats" icon={start_btn} />
       <input
         type="file"
         onChange={handleImageChange}
@@ -86,3 +87,12 @@ function FeedPlayer() {
   );
 }
 export default FeedPlayer;
+
+function Tab({ to, icon }) {
+  return (
+    <div className="tab-item">
+      {" "}
+      <img src={icon} alt="Tab Icon" />
+    </div>
+  );
+}
