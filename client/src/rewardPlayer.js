@@ -103,9 +103,9 @@ function RewardPlayer({ callback }) {
     if (event.target === event.currentTarget) {
       closePopup();
       closeErrorPopup();
-    const logout = () => {
-        callback();
-    };
+    }
+};
+
     const generatingQuiz = async () => {
         try {
             // Call the backend sign-out route and send player data
@@ -116,13 +116,6 @@ function RewardPlayer({ callback }) {
             console.error("Error during generating quiz:", error);
         }
     }
-    const handleOverlayClick = (event) => {
-        // Close the popup if the overlay (outside the content) is clicked
-        if (event.target === event.currentTarget) {
-            closePopup();
-        }
-    };
-
     const loadImage = (base64String) => {
         if (base64String) {
             const img = new Image();

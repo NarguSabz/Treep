@@ -98,6 +98,7 @@ app.post('/signout', (req, res) => {
 
 app.get('/generatingQuiz', (req, res) => {
  runPrompt()
+ 
 });
 
 // Function to save player data to JSON file
