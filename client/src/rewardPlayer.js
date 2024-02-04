@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Resizer from "react-image-file-resizer";
 import { useAppContext } from "./AppContext";
 import axios from "axios";
-import start_btn from "./start_btn.svg";
+import start_btn from "./icons/btn.svg";
+import "./rewardPlayer.css";
 
 function FeedPlayer() {
+
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
   const { user, updateUserPoints } = useAppContext();
   const [image, setImage] = useState();
 
@@ -70,29 +79,20 @@ function FeedPlayer() {
   };
 
   return (
-    <div className="main-content">
+    <div className="app-container">
       <h3>point: {user.points}</h3>
-      {/* <label htmlFor="fileInput" className="custom-file-upload">
-        <i>read qrcode</i>
-      </label> */}
-      <Tab to="/player-stats" icon={start_btn} />
-      <input
-        type="file"
-        onChange={handleImageChange}
-        id="fileInput"
-        accept="image/*"
-        style={{ display: "none" }}
-      />
+      <button className="centered-button" onClick={handleButtonClick}>
+        <img src={start_btn} alt="Button Image" />
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          id="fileInput"
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+      </button>
     </div>
   );
 }
 export default FeedPlayer;
-
-function Tab({ to, icon }) {
-  return (
-    <div className="tab-item">
-      {" "}
-      <img src={icon} alt="Tab Icon" />
-    </div>
-  );
-}
