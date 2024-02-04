@@ -5,6 +5,8 @@ const path = require("path");
 const Jimp = require("jimp");
 const qrCodeReader = require('qrcode-reader');
 const fs = require("fs");
+const moment = require('moment');
+
 
 
 // create our express app
@@ -58,12 +60,13 @@ const loadUsers = async () => {
   }
 };
 
-app.post('/readingQrCode', (req, res) =>{
+app.post('/readingQrCode', (req, res) => {
   try {
-    readQrcode(req.body.image)
-
-    // Respond with success message
-    res.json({ success: true });
+    // Respond with expired or valid qr
+    readQrcode(req.body.image, (result) => {
+      console.log(result)
+      res.json({ qrState: result });
+    });
   } catch (error) {
     console.error('Error during reading the qrcode:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -102,9 +105,9 @@ const saveuserData = (userData) => {
       // Find and update the player data based on your data structure
       const updatedUsers = users.map((user) => {
         if (user.username === userData.username) {
-         user.points = userData.points;  
+          user.points = userData.points;
         }
-          return user;
+        return user;
 
       });
 
@@ -120,29 +123,50 @@ const saveuserData = (userData) => {
   });
 };
 
-const readQrcode = (base64Image)=>{
+const readQrcode = (base64Image, callback) => {
   const buffer = Buffer.from(base64Image, 'base64');
- 
-// __ Parse the image using Jimp.read() __ \\
-Jimp.read(buffer, function(err, image) {
+
+  // __ Parse the image using Jimp.read() __ \\
+  Jimp.read(buffer, function (err, image) {
     if (err) {
-        console.error(err);
+      console.error(err);
     }
-// __ Creating an instance of qrcode-reader __ \\
+    // __ Creating an instance of qrcode-reader __ \\
 
     const qrCodeInstance = new qrCodeReader();
 
-    qrCodeInstance.callback = function(err, value) {
-        if (err) {
-            console.error(err);
+    qrCodeInstance.callback = function (err, value) {
+      if (err) {
+        console.error(err);
+      }
+      const qrCodeData = JSON.parse(value.result);
+
+      // Check if the "issueDate" and "timeLimit" properties exist
+      if (qrCodeData && qrCodeData.issueDate && qrCodeData.timeLimit) {
+        const issueDate = moment(qrCodeData.issueDate);
+        const timeLimit = qrCodeData.timeLimit;
+
+        // Calculate the expiration date based on the time limit
+        const expirationDate = issueDate.clone().add(moment.duration(timeLimit));
+
+        // Get the current date and time
+        const currentDate = moment();
+
+        // Compare the current date and time to the expiration date
+        if (currentDate.isBefore(expirationDate)) {
+          callback('valid'); // Call the callback with a success message
+        } else {
+          callback('expired'); // Call the callback with an expired message
         }
-// __ Printing the decrypted value __ \\
-        console.log(value.result);
+      } else {
+        callback('invalid'); // Call the callback with an invalid message
+      }
+
     };
 
-// __ Decoding the QR code __ \\
+    // __ Decoding the QR code __ \\
     qrCodeInstance.decode(image.bitmap);
-});
+  });
 }
 
 const PORT = process.env.PORT || 3001;
