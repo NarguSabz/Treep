@@ -107,22 +107,22 @@ app.get('/generatingQuiz', async (req, res) => {
     }
 
     // Find the starting index of the question
-    const questionStartIndex = quizQuestion.indexOf('Question: ');
+    const questionStartIndex = quizQuestion.indexOf('Question');
 
     // Find the ending index of the question
-    const questionEndIndex = quizQuestion.indexOf('Correct', questionStartIndex);
+    const questionEndIndex = quizQuestion.indexOf('Answer', questionStartIndex);
 
     // Extract the question substring
     const question = quizQuestion.substring(questionStartIndex, questionEndIndex).trim();
 
     // Find the starting index of the correct answer
-    const correctAnswerStartIndex = quizQuestion.indexOf('Correct');
+    const correctAnswerStartIndex = questionEndIndex;
 
-    // Find the ending index of the correct answer
-    const correctAnswerEndIndex = quizQuestion.indexOf('Explanation', correctAnswerStartIndex);
+    // // Find the ending index of the correct answer
+    // const correctAnswerEndIndex = quizQuestion.indexOf('\n', correctAnswerStartIndex);
 
     // Extract the correct answer substring
-    const correctAnswer = quizQuestion.substring(correctAnswerStartIndex, correctAnswerEndIndex).trim();
+    const correctAnswer = quizQuestion.substring(correctAnswerStartIndex).trim();
 
     // Send the generated quiz question and correct answer as a response
     res.status(200).json({ quizQuestion: question, correctAnswer: correctAnswer });
@@ -222,7 +222,7 @@ const readQrcode = (base64Image, callback) => {
 const runPrompt = async () => {
   return completion = await openai.chat.completions.create({
     messages: [{ "role": "system", "content": "You are a helpful assistant." },
-    { "role": "user", "content": "Generate a trivia question related to sustainability, public transportation facts, or environmental initiatives for an eco-conscious mobile application. The question should have multiple-choice options (A, B, C, D) and a correct answer. Ensure that the question is engaging and informative, suitable for a daily quiz challenge." },],
+    { "role": "user", "content": "Generate a trivia question related to sustainability, public transportation facts, or environmental initiatives for an eco-conscious mobile application. The question should have multiple-choice options (A, B, C, D). Provide only the question answer pair with no explanation.Ensure that the question is engaging and informative, suitable for a daily quiz challenge." },],
     model: "gpt-3.5-turbo",
     max_tokens: 100,
     temperature: 1,

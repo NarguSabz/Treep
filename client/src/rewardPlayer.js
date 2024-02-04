@@ -13,6 +13,7 @@ import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
 import errorPopup from "./icons/invalid-qr.svg";
 import bonusPopup from "./icons/bonus.svg";
+import question_bg from "./icons/question-bg.svg";
 import logout_btn from "./icons/logout.svg";
 
 function RewardPlayer({ callback }) {
@@ -29,6 +30,8 @@ function RewardPlayer({ callback }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [showBonusPopup, setShowBonusPopup] = useState(false);
+  const [showTriviaPopup, setShowTriviaPopup] = useState(false);
+  const [triviaQuestion, setTriviaQuestion] = useState("");
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -92,6 +95,11 @@ function RewardPlayer({ callback }) {
     // Close the popup
     setShowBonusPopup(false);
   };
+
+  const closeTriviaPopup = () => {
+    // Close the popup
+    setShowTriviaPopup(false);
+  };
   const logout = () => {
     callback();
   };
@@ -102,20 +110,22 @@ function RewardPlayer({ callback }) {
       closePopup();
       closeErrorPopup();
       closeBonusPopup();
+      closeTriviaPopup();
     }
   };
 
-    const generatingQuiz = async () => {
-        try {
-            // Call the backend sign-out route and send player data
-            const response = await axios.get("http://localhost:3001/generatingQuiz");
-            console.log(`Quiz question: ${response.data.quizQuestion}`);
-            console.log(`Quiz answer: ${response.data.correctAnswer}`);
-
-        } catch (error) {
-            console.error("Error during generating quiz:", error);
-        }
+  const generatingQuiz = async () => {
+    try {
+      // Call the backend sign-out route and send player data
+      const response = await axios.get("http://localhost:3001/generatingQuiz");
+      console.log(`Quiz question: ${response.data.quizQuestion}`);
+      console.log(`Quiz answer: ${response.data.correctAnswer}`);
+      setShowTriviaPopup(true);
+      setTriviaQuestion(response.data.quizQuestion);
+    } catch (error) {
+      console.error("Error during generating quiz:", error);
     }
+  };
 
   const loadImage = (base64String) => {
     if (base64String) {
@@ -160,10 +170,19 @@ function RewardPlayer({ callback }) {
           </div>
         </div>
       )}
-      {showBonusPopup && user.points >=10 && (
+      {showBonusPopup && user.points >= 10 && (
         <div className="popup" onClick={handleOverlayClick}>
           <div className="popup-content" onClick={applyBonus}>
             <img src={bonusPopup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      {showTriviaPopup && (
+        <div className="trivia-popup" onClick={handleOverlayClick}>
+          <div className="trivia-popup-content">
+            <img src={question_bg} alt="Popup Background"  className="trivia-popup-background"/>
+            <p className="trivia-popup-text">{triviaQuestion}</p>
+            <input type="text" placeholder="Enter something" className="trivia-popup-input"/>
           </div>
         </div>
       )}
