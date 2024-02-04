@@ -42,7 +42,7 @@ const handleSignOut = async () => {
           </Route>
           <Route exact path='/login' element={<LoginForm />} />
         </Routes>
-        {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>}
+        {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
       </div>
     </Router>
   );

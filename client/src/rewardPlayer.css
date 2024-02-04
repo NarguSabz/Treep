@@ -5,10 +5,10 @@
     url(f.ttf) format("woff"), url(f.ttf) format("truetype");
 }
 
-.app-container {
+/* .app-container {
   position: relative;
   min-height: 100vh;
-}
+} */
 
 .centered-button {
   position: absolute;
@@ -27,28 +27,39 @@
 }
 
 .centered-content img {
-  margin-top: 10vh;
-  max-width: 50%; /* Ensure the image does not exceed its specified width */
-  max-height: 50%; /* Ensure the image does not exceed its specified height */
+  /* margin-top: 10vh; */
+ min-width: 300px; /* Ensure the image does not exceed its specified width */
+  min-height: 150px; /* Ensure the image does not exceed its specified height */
 }
 
+.top-left-content,
 .top-right-content {
   position: absolute;
-  top: 10px; /* Adjust the distance from the top */
-  right: 10px; /* Adjust the distance from the right */
   display: flex;
   align-items: center;
 }
 
+.top-left-content {
+  top: 10px; /* Adjust the distance from the top */
+  left: 10px; /* Adjust the distance from the left */
+}
+
+.top-right-content {
+  top: 10px; /* Adjust the distance from the top */
+  right: 10px; /* Adjust the distance from the right */
+}
+
+.top-left-content img,
 .top-right-content img {
   width: 50px;
   height: 50px;
   margin-right: 10px; /* Adjust the space between image and text */
 }
 
+.top-left-content p,
 .top-right-content p {
   margin: 0;
-  font-family: pixelFont , sans-serif;
-  font-size: 24px;
-  color: #000;
+  font-family: pixelFont, sans-serif; /* Replace 'YourPixelFont' with the actual font name */
+  font-size: 24px; /* Adjust the font size as needed */
+  color: #000; /* Adjust the text color */
 }

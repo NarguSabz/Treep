@@ -4,8 +4,12 @@ import { useAppContext } from "./AppContext";
 import axios from "axios";
 import start_btn from "./icons/btn.svg";
 import "./rewardPlayer.css";
-import tree from "./icons/tree-4.svg";
+import tree1 from "./icons/tree-1.svg";
+import tree2 from "./icons/tree-2.svg";
+import tree3 from "./icons/tree-3.svg";
+import tree4 from "./icons/tree-4.svg";
 import coin from "./icons/coin.svg";
+import question from "./icons/question.svg";
 
 function FeedPlayer() {
   const fileInputRef = useRef(null);
@@ -80,7 +84,7 @@ function FeedPlayer() {
   };
 
   return (
-    <div className="app-container">
+    <div className="main-content">
       <button className="centered-button" onClick={handleButtonClick}>
         <img src={start_btn} alt="Button Image" />
         <input
@@ -93,7 +97,10 @@ function FeedPlayer() {
         />
       </button>
       <div className="centered-content">
-        <img src={tree} alt="Centered Image" />
+        <img src={tree4} alt="Centered Image" />
+      </div>
+      <div className="top-left-content">
+        <img src={question} alt="Small Image" />
       </div>
       <div className="top-right-content">
         <img src={coin} alt="Small Image" />
