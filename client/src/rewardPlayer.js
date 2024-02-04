@@ -11,6 +11,7 @@ import tree4 from "./icons/tree-4.svg";
 import coin from "./icons/coin.svg";
 import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
+import errorPopup from "./icons/invalid-qr.svg";
 import logout_btn from "./icons/logout.svg";
 
 function FeedPlayer({ callback }) {
@@ -42,6 +43,7 @@ function FeedPlayer({ callback }) {
   const { user, updateUserPoints } = useAppContext();
   const [image, setImage] = useState();
   const [showPopup, setShowPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -77,7 +79,7 @@ function FeedPlayer({ callback }) {
         fileInput.value = "";
       } catch (error) {
         console.error("error in reading image", error);
-        //setShowPopup(true);
+        setShowErrorPopup(true);
       }
     }
   };
@@ -85,6 +87,11 @@ function FeedPlayer({ callback }) {
   const closePopup = () => {
     // Close the popup
     setShowPopup(false);
+  };
+
+  const closeErrorPopup = () => {
+    // Close the popup
+    setShowErrorPopup(false);
   };
 
   const logout = () => {
@@ -95,6 +102,7 @@ function FeedPlayer({ callback }) {
     // Close the popup if the overlay (outside the content) is clicked
     if (event.target === event.currentTarget) {
       closePopup();
+      closeErrorPopup();
     }
   };
 
@@ -119,7 +127,7 @@ function FeedPlayer({ callback }) {
       }
     } catch (error) {
       console.error("Error reading image:", error);
-      //setShowPopup(true);
+      setShowErrorPopup(true);
     }
   };
 
@@ -129,6 +137,13 @@ function FeedPlayer({ callback }) {
         <div className="popup" onClick={handleOverlayClick}>
           <div className="popup-content" onClick={closePopup}>
             <img src={popup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      {showErrorPopup && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={closePopup}>
+            <img src={errorPopup} alt="Popup Background" />
           </div>
         </div>
       )}
