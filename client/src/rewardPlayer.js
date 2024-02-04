@@ -4,6 +4,7 @@ import { useAppContext } from "./AppContext";
 import axios from "axios";
 import start_btn from "./icons/btn.svg";
 import "./rewardPlayer.css";
+import tree from "./icons/tree-4.svg"
 
 function FeedPlayer() {
 
@@ -92,6 +93,9 @@ function FeedPlayer() {
           style={{ display: "none" }}
         />
       </button>
+      <div className="centered-content">
+        <img src={tree} alt="Centered Image" />
+      </div>
     </div>
   );
 }
