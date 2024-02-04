@@ -77,7 +77,7 @@ function FeedPlayer({ callback }) {
         fileInput.value = "";
       } catch (error) {
         console.error("error in reading image", error);
-        setShowPopup(true);
+        //setShowPopup(true);
       }
     }
   };
@@ -115,10 +115,11 @@ function FeedPlayer({ callback }) {
       // Update the user's points
       if (response.data.qrState == "valid") {
         updateUserPoints(user.points + 1);
+        setShowPopup(true);
       }
     } catch (error) {
       console.error("Error reading image:", error);
-      setShowPopup(true);
+      //setShowPopup(true);
     }
   };
 
