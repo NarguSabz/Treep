@@ -58,8 +58,16 @@ const loadUsers = async () => {
   }
 };
 
-app.post('/readingQrCode',()=>{
-  readQrcode(req.body.image)
+app.post('/readingQrCode', (req, res) =>{
+  try {
+    readQrcode(req.body.image)
+
+    // Respond with success message
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error during reading the qrcode:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 })
 // server/index.js
 app.post('/signout', (req, res) => {
@@ -77,10 +85,6 @@ app.post('/signout', (req, res) => {
   }
 });
 
-// server/index.js
-app.post('/readingQrCode', (req, res) => {
-  res.json({ success: true });
-});
 
 // Function to save player data to JSON file
 const saveuserData = (userData) => {
