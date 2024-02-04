@@ -10,6 +10,7 @@ import tree3 from "./icons/tree-3.svg";
 import tree4 from "./icons/tree-4.svg";
 import coin from "./icons/coin.svg";
 import question from "./icons/question.svg";
+import popup from "./icons/popup.svg";
 
 function FeedPlayer() {
   const fileInputRef = useRef(null);
@@ -21,6 +22,7 @@ function FeedPlayer() {
   };
   const { user, updateUserPoints } = useAppContext();
   const [image, setImage] = useState();
+  const [showPopup, setShowPopup] = useState(false);
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -56,7 +58,20 @@ function FeedPlayer() {
         fileInput.value = "";
       } catch (error) {
         console.error("error in reading image", error);
+        setShowPopup(true);
       }
+    }
+  };
+
+  const closePopup = () => {
+    // Close the popup
+    setShowPopup(false);
+  };
+
+  const handleOverlayClick = (event) => {
+    // Close the popup if the overlay (outside the content) is clicked
+    if (event.target === event.currentTarget) {
+      closePopup();
     }
   };
 
@@ -80,11 +95,19 @@ function FeedPlayer() {
       }
     } catch (error) {
       console.error("Error reading image:", error);
+      setShowPopup(true);
     }
   };
 
   return (
     <div className="main-content">
+      {showPopup && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={closePopup}>
+            <img src={popup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
       <button className="centered-button" onClick={handleButtonClick}>
         <img src={start_btn} alt="Button Image" />
         <input
