@@ -1,12 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Resizer from "react-image-file-resizer";
 import { useAppContext } from "./AppContext";
 import axios from "axios";
-import start_btn from "./start_btn.svg";
+import start_btn from "./icons/btn.svg";
+import "./rewardPlayer.css";
+import tree1 from "./icons/tree-1.svg";
+import tree2 from "./icons/tree-2.svg";
+import tree3 from "./icons/tree-3.svg";
+import tree4 from "./icons/tree-4.svg";
+import coin from "./icons/coin.svg";
+import question from "./icons/question.svg";
+import popup from "./icons/popup.svg";
+import logout_btn from "./icons/logout.svg";
 
-function FeedPlayer() {
+function FeedPlayer({ callback }) {
+  const { isAuthenticated, setIsAuthenticated } = useAppContext();
+  // Create a new Signout component
+  const handleSignOut = async () => {
+    try {
+      // Call the backend sign-out route and send player data
+      const response = await axios.post("http://localhost:3001/signout", {
+        userData: user,
+      });
+
+      // Update the authentication state in your context
+      setIsAuthenticated(false);
+
+      // Redirect to the login page or any other page
+      window.location.href = "/login"; // Use window.location for redirection
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+    }
+  };
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
   const { user, updateUserPoints } = useAppContext();
   const [image, setImage] = useState();
+  const [showPopup, setShowPopup] = useState(false);
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -42,7 +77,24 @@ function FeedPlayer() {
         fileInput.value = "";
       } catch (error) {
         console.error("error in reading image", error);
+        setShowPopup(true);
       }
+    }
+  };
+
+  const closePopup = () => {
+    // Close the popup
+    setShowPopup(false);
+  };
+
+  const logout = () => {
+    callback();
+  };
+
+  const handleOverlayClick = (event) => {
+    // Close the popup if the overlay (outside the content) is clicked
+    if (event.target === event.currentTarget) {
+      closePopup();
     }
   };
 
@@ -66,33 +118,62 @@ function FeedPlayer() {
       }
     } catch (error) {
       console.error("Error reading image:", error);
+      setShowPopup(true);
     }
   };
 
   return (
     <div className="main-content">
-      <h3>point: {user.points}</h3>
-      {/* <label htmlFor="fileInput" className="custom-file-upload">
-        <i>read qrcode</i>
-      </label> */}
-      <Tab to="/player-stats" icon={start_btn} />
-      <input
-        type="file"
-        onChange={handleImageChange}
-        id="fileInput"
-        accept="image/*"
-        style={{ display: "none" }}
-      />
+      {showPopup && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={closePopup}>
+            <img src={popup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      <button className="centered-button" onClick={handleButtonClick}>
+        <img src={start_btn} alt="Button Image" />
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          id="fileInput"
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+      </button>
+
+      {user.points == 1 && (
+        <div className="centered-content-tree1">
+          <img src={tree1} alt="Centered Image" />
+        </div>
+      )}
+      {user.points == 2 && (
+        <div className="centered-content-tree2">
+          <img src={tree2} alt="Centered Image" />
+        </div>
+      )}
+      {user.points == 3 && (
+        <div className="centered-content-tree3">
+          <img src={tree3} alt="Centered Image" />
+        </div>
+      )}
+      {user.points >= 4 && (
+        <div className="centered-content-tree4">
+          <img src={tree4} alt="Centered Image" />
+        </div>
+      )}
+
+      <div className="top-left-content">
+        <img src={logout_btn} alt="Second Small Image" onClick={logout} />
+        <img src={question} alt="Small Image" />
+      </div>
+      <div className="top-right-content">
+        <img src={coin} alt="Small Image" />
+        <p>{user.points}</p>
+      </div>
+      {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
     </div>
   );
 }
 export default FeedPlayer;
-
-function Tab({ to, icon }) {
-  return (
-    <div className="tab-item">
-      {" "}
-      <img src={icon} alt="Tab Icon" />
-    </div>
-  );
-}

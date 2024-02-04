@@ -1,0 +1,118 @@
+@font-face {
+  font-family: "pixelFont";
+  src: url(f.ttf);
+  src: url(f.ttf) format("embedded-opentype"), url(f.ttf) format("woff2"),
+    url(f.ttf) format("woff"), url(f.ttf) format("truetype");
+}
+
+.centered-button {
+  position: absolute;
+  width: 300px;
+  height: 150px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.centered-content,
+.centered-content-tree1,
+.centered-content-tree2,
+.centered-content-tree3,
+.centered-content-tree4 {
+  text-align: center;
+}
+
+.centered-content img,
+.centered-content-tree4 img {
+  /* margin-top: 10vh; */
+  min-width: 350px; /* Ensure the image does not exceed its specified width */
+  min-height: 350px; /* Ensure the image does not exceed its specified height */
+}
+
+.centered-content-tree3 img {
+  margin-top: 10vh;
+  min-width: 250px; /* Ensure the image does not exceed its specified width */
+  min-height: 250px; /* Ensure the image does not exceed its specified height */
+}
+
+
+.centered-content-tree2 img {
+  margin-top: 20vh;
+  min-width: 200px; /* Ensure the image does not exceed its specified width */
+  min-height: 200px; /* Ensure the image does not exceed its specified height */
+}
+.centered-content-tree1 img{
+  margin-top: 30vh;
+  min-width: 150px; /* Ensure the image does not exceed its specified width */
+  min-height: 150px; /* Ensure the image does not exceed its specified height */
+}
+
+.top-left-content,
+.top-right-content {
+  position: absolute;
+  display: flex;
+  align-items: center;
+}
+
+.top-left-content {
+  top: 10px; /* Adjust the distance from the top */
+  left: 20px; /* Adjust the distance from the left */
+}
+
+.top-right-content {
+  top: 10px; /* Adjust the distance from the top */
+  right: 20px; /* Adjust the distance from the right */
+}
+
+.top-left-content img,
+.top-right-content img {
+  width: 50px;
+  height: 50px;
+  margin-right: 20px; /* Adjust the space between image and text */
+}
+
+.top-left-content p,
+.top-right-content p {
+  margin: 0;
+  font-family: pixelFont, sans-serif;
+  font-size: 24px;
+  color: #000;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-content {
+  position: relative;
+  max-width: 80vw;
+  max-height: 80vh;
+}
+
+.popup img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the entire container */
+}
+
+.popup button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
