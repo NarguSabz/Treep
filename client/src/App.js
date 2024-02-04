@@ -38,11 +38,10 @@ const handleSignOut = async () => {
       <div className="app-container">
         <Routes>
           <Route exact path='/' element={<PrivateRoute />}>
-            <Route exact path='/' element={<RewardPlayer />} />
+            <Route exact path='/' element={<RewardPlayer callback={handleSignOut}/>} />
           </Route>
           <Route exact path='/login' element={<LoginForm />} />
         </Routes>
-        {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
       </div>
     </Router>
   );

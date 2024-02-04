@@ -11,8 +11,27 @@ import tree4 from "./icons/tree-4.svg";
 import coin from "./icons/coin.svg";
 import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
+import logout_btn from "./icons/logout.svg";
 
-function FeedPlayer() {
+function FeedPlayer({ callback }) {
+  const { isAuthenticated, setIsAuthenticated } = useAppContext();
+  // Create a new Signout component
+  const handleSignOut = async () => {
+    try {
+      // Call the backend sign-out route and send player data
+      const response = await axios.post("http://localhost:3001/signout", {
+        userData: user,
+      });
+
+      // Update the authentication state in your context
+      setIsAuthenticated(false);
+
+      // Redirect to the login page or any other page
+      window.location.href = "/login"; // Use window.location for redirection
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+    }
+  };
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -66,6 +85,10 @@ function FeedPlayer() {
   const closePopup = () => {
     // Close the popup
     setShowPopup(false);
+  };
+
+  const logout = () => {
+    callback();
   };
 
   const handleOverlayClick = (event) => {
@@ -142,12 +165,14 @@ function FeedPlayer() {
       )}
 
       <div className="top-left-content">
+        <img src={logout_btn} alt="Second Small Image" onClick={logout} />
         <img src={question} alt="Small Image" />
       </div>
       <div className="top-right-content">
         <img src={coin} alt="Small Image" />
         <p>{user.points}</p>
       </div>
+      {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
     </div>
   );
 }
