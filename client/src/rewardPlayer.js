@@ -4,10 +4,10 @@ import { useAppContext } from "./AppContext";
 import axios from "axios";
 import start_btn from "./icons/btn.svg";
 import "./rewardPlayer.css";
-import tree from "./icons/tree-4.svg"
+import tree from "./icons/tree-4.svg";
+import coin from "./icons/coin.svg";
 
 function FeedPlayer() {
-
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -81,7 +81,6 @@ function FeedPlayer() {
 
   return (
     <div className="app-container">
-      <h3>point: {user.points}</h3>
       <button className="centered-button" onClick={handleButtonClick}>
         <img src={start_btn} alt="Button Image" />
         <input
@@ -95,6 +94,10 @@ function FeedPlayer() {
       </button>
       <div className="centered-content">
         <img src={tree} alt="Centered Image" />
+      </div>
+      <div className="top-right-content">
+        <img src={coin} alt="Small Image" />
+        <p>{user.points}</p>
       </div>
     </div>
   );

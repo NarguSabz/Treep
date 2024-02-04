@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "pixelFont";
+  src: url(f.ttf);
+  src: url(f.ttf) format("embedded-opentype"), url(f.ttf) format("woff2"),
+    url(f.ttf) format("woff"), url(f.ttf) format("truetype");
+}
+
 .app-container {
   position: relative;
   min-height: 100vh;
@@ -23,4 +30,25 @@
   margin-top: 10vh;
   max-width: 50%; /* Ensure the image does not exceed its specified width */
   max-height: 50%; /* Ensure the image does not exceed its specified height */
+}
+
+.top-right-content {
+  position: absolute;
+  top: 10px; /* Adjust the distance from the top */
+  right: 10px; /* Adjust the distance from the right */
+  display: flex;
+  align-items: center;
+}
+
+.top-right-content img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px; /* Adjust the space between image and text */
+}
+
+.top-right-content p {
+  margin: 0;
+  font-family: pixelFont , sans-serif;
+  font-size: 24px;
+  color: #000;
 }
