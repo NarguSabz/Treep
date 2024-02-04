@@ -109,9 +109,10 @@ function RewardPlayer({ callback }) {
     const generatingQuiz = async () => {
         try {
             // Call the backend sign-out route and send player data
-            const response = await axios.get("http://localhost:3001/generatingQuiz", {
-                userData: user,
-            });
+            const response = await axios.get("http://localhost:3001/generatingQuiz");
+            console.log(`Quiz question: ${response.data.quizQuestion}`);
+            console.log(`Quiz answer: ${response.data.correctAnswer}`);
+
         } catch (error) {
             console.error("Error during generating quiz:", error);
         }

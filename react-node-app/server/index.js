@@ -96,9 +96,41 @@ app.post('/signout', (req, res) => {
   }
 });
 
-app.get('/generatingQuiz', (req, res) => {
- runPrompt()
- 
+app.get('/generatingQuiz', async (req, res) => {
+  try {
+    const completion = await runPrompt();
+    const quizQuestion = completion.choices?.[0]?.message?.content.trim();
+
+    console.log(quizQuestion)
+    if (!quizQuestion) {
+      throw new Error("Unexpected response format from OpenAI API");
+    }
+
+    // Find the starting index of the question
+    const questionStartIndex = quizQuestion.indexOf('Question: ');
+
+    // Find the ending index of the question
+    const questionEndIndex = quizQuestion.indexOf('Correct', questionStartIndex);
+
+    // Extract the question substring
+    const question = quizQuestion.substring(questionStartIndex, questionEndIndex).trim();
+
+    // Find the starting index of the correct answer
+    const correctAnswerStartIndex = quizQuestion.indexOf('Correct');
+
+    // Find the ending index of the correct answer
+    const correctAnswerEndIndex = quizQuestion.indexOf('Explanation', correctAnswerStartIndex);
+
+    // Extract the correct answer substring
+    const correctAnswer = quizQuestion.substring(correctAnswerStartIndex, correctAnswerEndIndex).trim();
+
+    // Send the generated quiz question and correct answer as a response
+    res.status(200).json({ quizQuestion: question, correctAnswer: correctAnswer });
+  } catch (error) {
+    console.error(error);
+    // Handle errors and send an appropriate response
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Function to save player data to JSON file
@@ -188,14 +220,13 @@ const readQrcode = (base64Image, callback) => {
 }
 
 const runPrompt = async () => {
-  const completion = await openai.chat.completions.create({
+  return completion = await openai.chat.completions.create({
     messages: [{ "role": "system", "content": "You are a helpful assistant." },
     { "role": "user", "content": "Generate a trivia question related to sustainability, public transportation facts, or environmental initiatives for an eco-conscious mobile application. The question should have multiple-choice options (A, B, C, D) and a correct answer. Ensure that the question is engaging and informative, suitable for a daily quiz challenge." },],
     model: "gpt-3.5-turbo",
     max_tokens: 100,
     temperature: 1,
   });
-  console.log(completion.choices[0].message.content);
 
 }
 
