@@ -12,28 +12,12 @@ import coin from "./icons/coin.svg";
 import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
 import errorPopup from "./icons/invalid-qr.svg";
+import bonusPopup from "./icons/bonus.svg";
 import logout_btn from "./icons/logout.svg";
 
 function RewardPlayer({ callback }) {
-    const { isAuthenticated, setIsAuthenticated } = useAppContext();
-    // Create a new Signout component
-    const handleSignOut = async () => {
-        try {
-            // Call the backend sign-out route and send player data
-            const response = await axios.post("http://localhost:3001/signout", {
-                userData: user,
-            });
-
-            // Update the authentication state in your context
-            setIsAuthenticated(false);
-
-            // Redirect to the login page or any other page
-            window.location.href = "/login"; // Use window.location for redirection
-        } catch (error) {
-            console.error("Error during sign-out:", error);
-        }
-    };
-    const fileInputRef = useRef(null);
+  // Create a new Signout component
+  const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -44,30 +28,31 @@ function RewardPlayer({ callback }) {
   const [image, setImage] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [showBonusPopup, setShowBonusPopup] = useState(false);
 
-    const resizeFile = (file) =>
-        new Promise((resolve) => {
-            Resizer.imageFileResizer(
-                file,
-                300,
-                300,
-                "JPEG",
-                70,
-                0,
-                (uri) => {
-                    resolve(uri);
-                },
-                "base64"
-            );
-        });
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        300,
+        300,
+        "JPEG",
+        70,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "base64"
+      );
+    });
 
-    const handleImageChange = async (event) => {
-        const file = event.target.files[0];
-        const fileInput = event.target;
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    const fileInput = event.target;
 
-        if (file) {
-            try {
-                const resizedImage = await resizeFile(file);
+    if (file) {
+      try {
+        const resizedImage = await resizeFile(file);
 
         const base64String = resizedImage.split(",")[1];
         // Now you can use the base64String as needed
@@ -83,17 +68,30 @@ function RewardPlayer({ callback }) {
       }
     }
   };
+  // add new field to user for the number of trips
+  const applyBonus = () => {
+    updateUserPoints(user.points - 10);
+  };
 
-    const closePopup = () => {
-        // Close the popup
-        setShowPopup(false);
-    };
+  const openBonusPopup = () => {
+    // Close the popup
+    setShowBonusPopup(true);
+  };
+
+  const closePopup = () => {
+    // Close the popup
+    setShowPopup(false);
+  };
 
   const closeErrorPopup = () => {
     // Close the popup
     setShowErrorPopup(false);
   };
 
+  const closeBonusPopup = () => {
+    // Close the popup
+    setShowBonusPopup(false);
+  };
   const logout = () => {
     callback();
   };
@@ -103,8 +101,9 @@ function RewardPlayer({ callback }) {
     if (event.target === event.currentTarget) {
       closePopup();
       closeErrorPopup();
+      closeBonusPopup();
     }
-};
+  };
 
     const generatingQuiz = async () => {
         try {
@@ -117,13 +116,14 @@ function RewardPlayer({ callback }) {
             console.error("Error during generating quiz:", error);
         }
     }
-    const loadImage = (base64String) => {
-        if (base64String) {
-            const img = new Image();
-            img.src = `data:image/jpeg;base64,${base64String}`;
-            img.onload = () => classifyImage(base64String);
-        }
-    };
+  };
+  const loadImage = (base64String) => {
+    if (base64String) {
+      const img = new Image();
+      img.src = `data:image/jpeg;base64,${base64String}`;
+      img.onload = () => classifyImage(base64String);
+    }
+  };
 
   const classifyImage = async (base64String) => {
     try {
@@ -135,6 +135,8 @@ function RewardPlayer({ callback }) {
       if (response.data.qrState == "valid") {
         updateUserPoints(user.points + 1);
         setShowPopup(true);
+      } else {
+        setShowErrorPopup(true);
       }
     } catch (error) {
       console.error("Error reading image:", error);
@@ -153,8 +155,15 @@ function RewardPlayer({ callback }) {
       )}
       {showErrorPopup && (
         <div className="popup" onClick={handleOverlayClick}>
-          <div className="popup-content" onClick={closePopup}>
+          <div className="popup-content" onClick={closeErrorPopup}>
             <img src={errorPopup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      {showBonusPopup && user.points >=10 && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={applyBonus}>
+            <img src={bonusPopup} alt="Popup Background" />
           </div>
         </div>
       )}
@@ -170,37 +179,37 @@ function RewardPlayer({ callback }) {
         />
       </button>
 
-            {user.points == 1 && (
-                <div className="centered-content-tree1">
-                    <img src={tree1} alt="Centered Image" />
-                </div>
-            )}
-            {user.points == 2 && (
-                <div className="centered-content-tree2">
-                    <img src={tree2} alt="Centered Image" />
-                </div>
-            )}
-            {user.points == 3 && (
-                <div className="centered-content-tree3">
-                    <img src={tree3} alt="Centered Image" />
-                </div>
-            )}
-            {user.points >= 4 && (
-                <div className="centered-content-tree4">
-                    <img src={tree4} alt="Centered Image" />
-                </div>
-            )}
-
-            <div className="top-left-content">
-                <img src={logout_btn} alt="Second Small Image" onClick={logout} />
-                <img src={question} alt="Small Image" onClick={generatingQuiz} />
-            </div>
-            <div className="top-right-content">
-                <img src={coin} alt="Small Image" />
-                <p>{user.points}</p>
-            </div>
-            {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
+      {user.points == 1 && (
+        <div className="centered-content-tree1">
+          <img src={tree1} alt="Centered Image" />
         </div>
-    );
+      )}
+      {user.points == 2 && (
+        <div className="centered-content-tree2">
+          <img src={tree2} alt="Centered Image" />
+        </div>
+      )}
+      {user.points == 3 && (
+        <div className="centered-content-tree3">
+          <img src={tree3} alt="Centered Image" />
+        </div>
+      )}
+      {user.points >= 4 && (
+        <div className="centered-content-tree4">
+          <img src={tree4} alt="Centered Image" />
+        </div>
+      )}
+
+      <div className="top-left-content">
+        <img src={logout_btn} alt="Second Small Image" onClick={logout} />
+        <img src={question} alt="Small Image" onClick={generatingQuiz} />
+      </div>
+      <div className="top-right-content">
+        <img src={coin} alt="Small Image" onClick={openBonusPopup} />
+        <p>{user.points}</p>
+      </div>
+      {/* {isAuthenticated && <button onClick={handleSignOut}>Sign Out</button>} */}
+    </div>
+  );
 }
 export default RewardPlayer;
