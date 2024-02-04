@@ -13,6 +13,7 @@ import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
 import errorPopup from "./icons/invalid-qr.svg";
 import bonusPopup from "./icons/bonus.svg";
+import answerPopup from "./icons/correct-answer.svg";
 import question_bg from "./icons/question-bg.svg";
 import logout_btn from "./icons/logout.svg";
 
@@ -30,6 +31,7 @@ function RewardPlayer({ callback }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [showBonusPopup, setShowBonusPopup] = useState(false);
+  const [showAnswerPopup, setShowAnswerPopup] = useState(false);
   const [showTriviaPopup, setShowTriviaPopup] = useState(false);
   const [triviaQuestion, setTriviaQuestion] = useState("");
 
@@ -100,6 +102,12 @@ function RewardPlayer({ callback }) {
     // Close the popup
     setShowTriviaPopup(false);
   };
+
+  const closeAnswerPopup = () => {
+    // Close the popup
+    setShowAnswerPopup(false);
+  };
+
   const logout = () => {
     callback();
   };
@@ -111,6 +119,7 @@ function RewardPlayer({ callback }) {
       closeErrorPopup();
       closeBonusPopup();
       closeTriviaPopup();
+      closeAnswerPopup();
     }
   };
 
@@ -125,6 +134,12 @@ function RewardPlayer({ callback }) {
     } catch (error) {
       console.error("Error during generating quiz:", error);
     }
+  };
+
+  // show popup
+  const checkAnswer = () => {
+    closeTriviaPopup();
+    setShowAnswerPopup(true);
   };
 
   const loadImage = (base64String) => {
@@ -177,12 +192,28 @@ function RewardPlayer({ callback }) {
           </div>
         </div>
       )}
+      {showAnswerPopup && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={closeAnswerPopup}>
+            <img src={answerPopup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
       {showTriviaPopup && (
         <div className="trivia-popup" onClick={handleOverlayClick}>
           <div className="trivia-popup-content">
-            <img src={question_bg} alt="Popup Background"  className="trivia-popup-background"/>
+            <img
+              src={question_bg}
+              alt="Popup Background"
+              className="trivia-popup-background"
+            />
             <p className="trivia-popup-text">{triviaQuestion}</p>
-            <input type="text" placeholder="Enter something" className="trivia-popup-input"/>
+            <input
+              type="text"
+              placeholder="Your Answer"
+              className="trivia-popup-input"
+            />
+            <button onClick={checkAnswer}>Submit</button>
           </div>
         </div>
       )}
