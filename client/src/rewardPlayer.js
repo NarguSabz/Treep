@@ -11,6 +11,7 @@ import tree4 from "./icons/tree-4.svg";
 import coin from "./icons/coin.svg";
 import question from "./icons/question.svg";
 import popup from "./icons/popup.svg";
+import errorPopup from "./icons/invalid-qr.svg";
 import logout_btn from "./icons/logout.svg";
 
 function RewardPlayer({ callback }) {
@@ -34,14 +35,15 @@ function RewardPlayer({ callback }) {
     };
     const fileInputRef = useRef(null);
 
-    const handleButtonClick = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
-    };
-    const { user, updateUserPoints } = useAppContext();
-    const [image, setImage] = useState();
-    const [showPopup, setShowPopup] = useState(false);
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+  const { user, updateUserPoints } = useAppContext();
+  const [image, setImage] = useState();
+  const [showPopup, setShowPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
     const resizeFile = (file) =>
         new Promise((resolve) => {
@@ -67,26 +69,40 @@ function RewardPlayer({ callback }) {
             try {
                 const resizedImage = await resizeFile(file);
 
-                const base64String = resizedImage.split(",")[1];
-                // Now you can use the base64String as needed
-                setImage(base64String);
-                // Read the file as a data URL
-                // const base64String = resizedImage.toString("base64");
-                loadImage(base64String); // Pass the base64 string to loadImage
-                // Reset the input value to allow selecting the same file again
-                fileInput.value = "";
-            } catch (error) {
-                console.error("error in reading image", error);
-                //setShowPopup(true);
-            }
-        }
-    };
+        const base64String = resizedImage.split(",")[1];
+        // Now you can use the base64String as needed
+        setImage(base64String);
+        // Read the file as a data URL
+        // const base64String = resizedImage.toString("base64");
+        loadImage(base64String); // Pass the base64 string to loadImage
+        // Reset the input value to allow selecting the same file again
+        fileInput.value = "";
+      } catch (error) {
+        console.error("error in reading image", error);
+        setShowErrorPopup(true);
+      }
+    }
+  };
 
     const closePopup = () => {
         // Close the popup
         setShowPopup(false);
     };
 
+  const closeErrorPopup = () => {
+    // Close the popup
+    setShowErrorPopup(false);
+  };
+
+  const logout = () => {
+    callback();
+  };
+
+  const handleOverlayClick = (event) => {
+    // Close the popup if the overlay (outside the content) is clicked
+    if (event.target === event.currentTarget) {
+      closePopup();
+      closeErrorPopup();
     const logout = () => {
         callback();
     };
@@ -115,43 +131,50 @@ function RewardPlayer({ callback }) {
         }
     };
 
-    const classifyImage = async (base64String) => {
-        try {
-            const response = await axios.post("http://localhost:3001/readingQrCode", {
-                image: base64String,
-            });
-            console.log(response.data.qrState);
-            // Update the user's points
-            if (response.data.qrState == "valid") {
-                updateUserPoints(user.points + 1);
-                setShowPopup(true);
-            }
-        } catch (error) {
-            console.error("Error reading image:", error);
-            //setShowPopup(true);
-        }
-    };
+  const classifyImage = async (base64String) => {
+    try {
+      const response = await axios.post("http://localhost:3001/readingQrCode", {
+        image: base64String,
+      });
+      console.log(response.data.qrState);
+      // Update the user's points
+      if (response.data.qrState == "valid") {
+        updateUserPoints(user.points + 1);
+        setShowPopup(true);
+      }
+    } catch (error) {
+      console.error("Error reading image:", error);
+      setShowErrorPopup(true);
+    }
+  };
 
-    return (
-        <div className="main-content">
-            {showPopup && (
-                <div className="popup" onClick={handleOverlayClick}>
-                    <div className="popup-content" onClick={closePopup}>
-                        <img src={popup} alt="Popup Background" />
-                    </div>
-                </div>
-            )}
-            <button className="centered-button" onClick={handleButtonClick}>
-                <img src={start_btn} alt="Button Image" />
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                    id="fileInput"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                />
-            </button>
+  return (
+    <div className="main-content">
+      {showPopup && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={closePopup}>
+            <img src={popup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      {showErrorPopup && (
+        <div className="popup" onClick={handleOverlayClick}>
+          <div className="popup-content" onClick={closePopup}>
+            <img src={errorPopup} alt="Popup Background" />
+          </div>
+        </div>
+      )}
+      <button className="centered-button" onClick={handleButtonClick}>
+        <img src={start_btn} alt="Button Image" />
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          id="fileInput"
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+      </button>
 
             {user.points == 1 && (
                 <div className="centered-content-tree1">
